@@ -1,0 +1,25 @@
+['Kickoff', 'Pass', 'Run', 'Punt', 'Sack', 'Field Goal', 'No Play',
+       'Quarter End', 'Two Minute Warning', 'Timeout', 'Extra Point',
+       'QB Kneel', 'End of Game', 'Spike', 'Half End']
+
+Kickoff: Kickoff Return (Offense), Kickoff Return Touchdown, Kickoff Return (Defense), Kickoff
+Pass: Pass Completion, Pass Incompletion, Pass Interception, Two Point Pass, Interception Return Touchdown, Pass, Pass Reception, 
+	Pass Interception Return, Passing Touchdown, Interception
+Run: Rush, Two Point Rush, Rushing Touchdown
+Punt: Punt Return, Blocked Punt Touchdown, Blocked Punt, Punt Return Touchdown, Punt
+No Play: Penalty
+Sack: Sack
+No Play: End Period
+Timeout: Timeout
+Safety: Safety, Offensive 1pt Safety
+Field Goal: Blocked Field Goal Touchdown, Blocked Field Goal, Missed Field Goal Return Touchdown, Field Goal Missed, Field Goal Good,
+	Missed Field Goal Return
+Extra Point: Blocked PAT, Extra Point Good, Extra Point Missed
+Quarter End: End of Half
+End of Game: End of Game
+
+Fix nan
+Fix Fumble Recovery (Opponent), Fumble Return Touchdown, Fumble Recovery (Own) as how fumble happened (pass, rush)
+Fix 2pt Conversion as how the play went (pass, rush)
+Remove Coin Toss rows
+Fix Defensive 2pt Conversion as how play went (pass, rush), downs are also messed up
