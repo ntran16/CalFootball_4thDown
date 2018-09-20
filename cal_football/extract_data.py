@@ -3,9 +3,11 @@ import numpy as np
 
 def extract_data(pxp):
 
+# We only cover offensive TouchDown
+
     cols = ['gameId', 'driveIndex', 'quarter', 'down', 'yardLine', 'distance', 'yardsGained',
             'offenseTeam', 'defenseTeam', 'description', 'type', 'isScoringPlay',
-            'homeScore', 'awayScore', 'homeTeam', 'awayTeam']
+            'homeScore', 'awayScore', 'homeTeam', 'awayTeam', 'clock']
 
     pxp['type'].fillna('No Play', inplace = True)
 
@@ -13,18 +15,25 @@ def extract_data(pxp):
     pxp['half'] = pd.cut(pxp['quarter'], [1,2,4,6], labels=[1,2,3], include_lowest=True)
 
     # Compute yardage (NCAA data yardage is relative to home team except for kickoff plays) 
-    pxp['yrdline100'] = np.select([(pxp['homeTeam'] == pxp['offenseTeam']) & (~pxp['type'].str.contains('Kickoff')), 
-                                (pxp['homeTeam'] == pxp['offenseTeam']) & (pxp['type'].str.contains('Kickoff')), 
-                                (pxp['awayTeam'] == pxp['offenseTeam']) & (~pxp['type'].str.contains('Kickoff')),
-                                (pxp['awayTeam'] == pxp['offenseTeam']) & (pxp['type'].str.contains('Kickoff'))], 
-                               [100-pxp['yardLine'], pxp['yardLine'], pxp['yardLine'], 100-pxp['yardLine']], default='np.nan').astype(int)
-    
+#     pxp['yrdline100'] = np.select([(pxp['homeTeam'] == pxp['offenseTeam']) & (~pxp['type'].str.contains('Kickoff')), 
+#                                 (pxp['homeTeam'] == pxp['offenseTeam']) & (pxp['type'].str.contains('Kickoff')), 
+#                                 (pxp['awayTeam'] == pxp['offenseTeam']) & (~pxp['type'].str.contains('Kickoff')),
+#                                 (pxp['awayTeam'] == pxp['offenseTeam']) & (pxp['type'].str.contains('Kickoff'))], 
+#                                [100-pxp['yardLine'], pxp['yardLine'], pxp['yardLine'], 100-pxp['yardLine']], default='np.nan').astype(int)
+
+    pxp['yrdline100'] = np.select([(pxp['homeTeam'] == pxp['offenseTeam']),
+                                (pxp['awayTeam'] == pxp['offenseTeam'])], 
+                               [100-pxp['yardLine'], pxp['yardLine']], default='np.nan').astype(int)
+
     # Compute field region
     pxp['yrdregion'] = pd.cut(pxp['yrdline100'], [0., 9., 20., 100.], labels=['Inside10', '10to20', 'Beyond20'])
     
     # Compute Touchdown play: Make a new column to determine offensive touchdown (only either rushing or passing play)
     # The NFL model use both defensive and offensive TD here (and some other weird type of TD)
-    pxp['Touchdown'] = np.where((pxp['type']=='Passing Touchdown')|(pxp['type']=='Rushing Touchdown'), 1, 0)
+    pxp['Touchdown'] = np.where((pxp['type']=='Passing Touchdown')|(pxp['type']=='Rushing Touchdown')|(pxp['description'].str.contains('TD'))|(pxp['description'].str.contains('Touchdown'))|(pxp['description'].str.contains('TOUCHDOWN')), 1, 0)
+
+    # index of play
+    pxp['index'] = range(1, len(pxp) + 1)
 
     ## Compute fieldgoal play: Make a new column to determine fieldgoals as missed, blocked, or good
     fgcondition = [(pxp['type']=='Field Goal Good'), 
@@ -71,5 +80,6 @@ def extract_data(pxp):
         (pxp.loc[ignore_mask, 'Touchdown'] == 1)
     ).astype(int)
     
+    pxp['yrdline100'] = pxp['yrdline100'].astype(int)
     
     return pxp
