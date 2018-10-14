@@ -32,6 +32,8 @@ CHANGED IN NCAA-FOOTBALL-DATA
 
 	Deleted 2015 Week 1 line 9698 (kind of repeat)
 
+	Changed 2004 Week 12 line 3670 "109 yard field goal" to "34 yard field goal".
+
 DIFFERENCES WITH IMPROVED-NCAA-FOOTBALL-DATA
 	NFL data: ['Kickoff', 'Pass', 'Run', 'Punt', 'Sack', 'Field Goal', 'No Play',
        'Quarter End', 'Two Minute Warning', 'Timeout', 'Extra Point',

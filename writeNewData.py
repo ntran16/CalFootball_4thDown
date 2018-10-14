@@ -30,6 +30,12 @@ def addResults(pxp):
 	pxp.loc[wrongdistance, 'FieldGoalDistance'] = wrongmatch['yardLine'].astype(int) + 17
 	#TODO Fix field goal success
 
+def distanceBasedOnDescription(description):
+	words = description.split(' ')
+	for i in range(1, len(words)):
+		if i < 
+		if words[i] == 'yard'
+
 def fixFieldGoalDistance(pxp):
 	fieldgoalnodistance = (pxp['type'] == 'Field Goal') & (~pxp['FieldGoalDistance'].notnull())
 	nodistancematch = pxp.loc[fieldgoalnodistance]
