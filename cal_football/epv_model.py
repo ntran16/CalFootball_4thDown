@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
 import statsmodels.formula.api as smf
+from statsmodels.nonparametric.smoothers_lowess import lowess
 
-def epv_model(pxp):
-	extract_kickoffs_and_possessions(pxp)
+def epv_model(ko_and_poss):
+
 	first_and_third_qtr = (ko_and_poss['quarter'] == 1) | (ko_and_poss['quarter'] == 3)
 	ko_and_poss_first_and_third = ko_and_poss.loc[first_and_third_qtr]
 
@@ -29,7 +30,7 @@ def epv_model(pxp):
 	ekv = -.6
 
 	possession_values['EPV'] = results.fittedvalues.values
-	epv_model = possession_values['EPV']
+	epv_model_f = possession_values['EPV']
 
 
-	return ekv, epv_model
+	return ekv, epv_model_f
