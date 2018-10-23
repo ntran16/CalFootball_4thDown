@@ -1,0 +1,69 @@
+CHANGED IN NCAA-FOOTBALL-DATA
+	Changed 2014 Week 9 line 1386 to splitting the two lines because they were combined
+	http://www.espn.com/college-football/playbyplay?gameId=400547791
+
+	Changed 2007 Week 11 line 5316 "Lones Seiber 38 yards for a FIELD GOAL." to "Lones Seiber 38 yard field goal GOOD." and 
+	deleted useless line after
+
+	Moved 2011 Week 1 line 7615 to right position (messed up http://www.espn.com/college-football/playbyplay?gameId=312460197)
+		Deleted extra line 7617
+		Deleted extra lines 7622-7625
+		Fixed play structure of lines 7616-7628
+			Changed line 7620 Timeout to Pass
+			Changed line 7621 Timeout to Punt
+			Deleted lines 7622-7624
+		Changed score to right score line 7632-7648
+
+	Changed 2010 Week 13 line 5432 Rush to Kickoff
+
+	Changed 2011 Week 10 line 5357 Rush to Kickoff
+
+	Changed 2013 Week 10 line 4011 Rush to Kickoff
+
+	Fixed 2016 Week 6 line 6318-6329 (near end of 3rd quarter) deleting repeats and making it accurate according to http://www.espn.com/college-football/playbyplay?gameId=400869460
+
+	Deleted 2013 Week 10 line 1427 (repeat)
+
+	Deleted 2014 Week 10 line 6447 (kind of repeat)
+
+	Deleted 2014 Week 12 line 3107 (kind of repeat)
+
+	Deleted 2014 Week 15 line 952 (kind of repeat)
+
+	Deleted 2015 Week 1 line 9698 (kind of repeat)
+
+	Changed 2004 Week 12 line 3670 "109 yard field goal" to "34 yard field goal".
+
+DIFFERENCES WITH IMPROVED-NCAA-FOOTBALL-DATA
+	NFL data: ['Kickoff', 'Pass', 'Run', 'Punt', 'Sack', 'Field Goal', 'No Play',
+       'Quarter End', 'Two Minute Warning', 'Timeout', 'Extra Point',
+       'QB Kneel', 'End of Game', 'Spike', 'Half End']
+
+	Kickoff: Kickoff Return (Offense), Kickoff Return Touchdown, Kickoff Return (Defense), Kickoff
+	Pass: Pass Completion, Pass Incompletion, Pass Interception, Two Point Pass, Interception Return Touchdown, Pass, 
+		Pass Reception, Pass Interception Return, Passing Touchdown, Interception
+	Run: Rush, Two Point Rush, Rushing Touchdown
+	Punt: Punt Return, Blocked Punt Touchdown, Blocked Punt, Punt Return Touchdown, Punt
+	No Play: Penalty, End Period
+	Sack: Sack
+	Timeout: Timeout
+	Field Goal: Blocked Field Goal Touchdown, Blocked Field Goal, Missed Field Goal Return Touchdown, Field Goal Missed, Field Goal Good,
+		Missed Field Goal Return
+	Extra Point: Blocked PAT, Extra Point Good, Extra Point Missed
+	Quarter End: End of Half
+	End of Game: End of Game
+
+	Changed all types with description 'field goal' with 'good', 'missed', or 'blocked' to Field Goal
+
+	Got rid of endYardLine
+
+	If homeTeam = offenseTeam and not kickoff, yardLine = 100 - yardLine
+
+TODO
+	Fix nan
+	Fix Fumble Recovery (Opponent), Fumble Return Touchdown, Fumble Recovery (Own) as how fumble happened (pass, rush)
+	Fix Safety as how safety happened (rush, sack)
+	Fix 2pt Conversion as how the play went (pass, rush)
+	Remove Coin Toss rows
+	Fix Defensive 2pt Conversion as how play went (pass, rush), downs are also messed up
+	Kickoff possessing team is wrong sometimes (should be receiving team)
