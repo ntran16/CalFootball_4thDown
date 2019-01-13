@@ -20,10 +20,13 @@ def m_extract_data(pxp):
 #                                 (pxp['awayTeam'] == pxp['offenseTeam']) & (~pxp['type'].str.contains('Kickoff')),
 #                                 (pxp['awayTeam'] == pxp['offenseTeam']) & (pxp['type'].str.contains('Kickoff'))], 
 #                                [100-pxp['yardLine'], pxp['yardLine'], pxp['yardLine'], 100-pxp['yardLine']], default='np.nan').astype(int)
-
-    pxp['yrdline100'] = np.select([(pxp['homeTeam'] == pxp['offenseTeam']),
-                                (pxp['awayTeam'] == pxp['offenseTeam'])], 
-                               [100-pxp['yardLine'], pxp['yardLine']], default='np.nan').astype(int)
+    yrdline100arr = []
+    for index, row in pxp.iterrows():
+        if row['home_off_away_def']:
+            yrdline100arr.append(100 - pxp['yardLine'])
+        else:
+            yrdline100arr.append(pxp['yardLine'])
+    pxp['yrdline100'] = yrdline100arr
 
     # Compute field region
     pxp['yrdregion'] = pd.cut(pxp['yrdline100'], [0., 9., 20., 100.], labels=['Inside10', '10to20', 'Beyond20'])
