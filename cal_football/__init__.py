@@ -8,6 +8,8 @@ from cal_football.extract_punts import extract_punts
 from cal_football.extract_field_goals import extract_field_goals
 from cal_football.extract_third_downs import extract_third_downs
 from cal_football.build_decision_maker import build_decision_maker
+from cal_football.modified_extract_k_and_p import modified_extract_k_and_p
+from cal_football.m_extract_data import m_extract_data
 
 
 def cal_football():
