@@ -39,7 +39,7 @@ def modified_extract_k_and_p(pxp):
             score_change_arr.append(-row['unfinalized_sc'])
     ko_and_poss['score_change'] = score_change_arr
     ko_and_poss['NextScore'] = score_change.fillna(0).replace(to_replace=0., method='bfill')
-#     ko_and_poss.loc[ko_and_poss['Touchdown']==1, 'NextScore'] = ko_and_poss['NextScore']/ko_and_poss['NextScore']*7
+    ko_and_poss.loc[ko_and_poss['Touchdown']==1, 'NextScore'] = ko_and_poss['NextScore']/ko_and_poss['NextScore']*7
     
     #originial algorithm:
     # Determine if the possessing team is home or away
