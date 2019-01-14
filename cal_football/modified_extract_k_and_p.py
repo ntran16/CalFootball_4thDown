@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-def modified_extract_k_and_p(pxp, game_data):
+def modified_extract_k_and_p(pxp):
     
     
     ko_mask = pxp['type'].isin(['Kickoff', 'Kickoff Return (Defense)','Kickoff Return Touchdown','Kickoff Return (Offense)'])  
@@ -29,14 +29,14 @@ def modified_extract_k_and_p(pxp, game_data):
     #See n_most_similar most_similar() function for explaination as to what matchup_list[3] is.
     score_change = game_halves['homeScore'].diff() - game_halves['awayScore'].diff()
     score_change_arr = []
-
+    ko_and_poss['unfinalized_sc'] = score_change
     # Backfill the score change so that each 
     
-    for index, row in pxp.iterrows():
+    for index, row in ko_and_poss.iterrows():
         if row["home_off_away_def"]:
-            score_change_arr.append(score_change)
+            score_change_arr.append(row['unfinalized_sc'])
         else:
-            score_change_arr.append(-score_change)
+            score_change_arr.append(-row['unfinalized_sc'])
     ko_and_poss['score_change'] = score_change_arr
     ko_and_poss['NextScore'] = score_change.fillna(0).replace(to_replace=0., method='bfill')
 #     ko_and_poss.loc[ko_and_poss['Touchdown']==1, 'NextScore'] = ko_and_poss['NextScore']/ko_and_poss['NextScore']*7
@@ -48,19 +48,16 @@ def modified_extract_k_and_p(pxp, game_data):
     #Matchup Modified Algorithm:
     #Determine if the posessing team is analagous to Cal or analgous to opponent team
     #NextScore is unchanged if posteam == ANALAGOUSCAL and negated if posteam == ANALGOUSOPP
-    posteam = ko_and_poss['offenseTeam']
-    hometeam = ko_and_poss['homeTeam']
-    awayteam = ko_and_poss['awayTeam']
     
     posteam_is_CAL_arr = []
     posteam_is_OPP_arr = []
-    for index, row in pxp.iterrows():
+    for index, row in ko_and_poss.iterrows():
         if row["home_off_away_def"]:
-            posteam_is_CAL_arr.append(int(posteam == hometeam))
-            posteam_is_OPP_arr.append(int(posteam == awayteam))
+            posteam_is_CAL_arr.append(int(row['offenseTeam'] == row['homeTeam']))
+            posteam_is_OPP_arr.append(int(row['offenseTeam'] == row['awayTeam']))
         else:
-            posteam_is_CAL_arr.append(int(posteam == awayteam))
-            posteam_is_OPP_arr.append(int(posteam == hometeam))
+            posteam_is_CAL_arr.append(int(row['offenseTeam'] == row['awayTeam']))
+            posteam_is_OPP_arr.append(int(row['offenseTeam'] == row['homeTeam']))
      
     ko_and_poss['posteam_is_CAL'] = posteam_is_CAL_arr
     ko_and_poss['posteam_is_OPP'] = posteam_is_OPP_arr

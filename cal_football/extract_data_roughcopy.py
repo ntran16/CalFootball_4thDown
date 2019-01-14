@@ -15,15 +15,14 @@ def extract_data(pxp):
     pxp['half'] = pd.cut(pxp['quarter'], [1,2,4,6], labels=[1,2,3], include_lowest=True)
 
     # Compute yardage (NCAA data yardage is relative to home team except for kickoff plays) 
-#     pxp['yrdline100'] = np.select([(pxp['homeTeam'] == pxp['offenseTeam']) & (~pxp['type'].str.contains('Kickoff')), 
-#                                 (pxp['homeTeam'] == pxp['offenseTeam']) & (pxp['type'].str.contains('Kickoff')), 
-#                                 (pxp['awayTeam'] == pxp['offenseTeam']) & (~pxp['type'].str.contains('Kickoff')),
-#                                 (pxp['awayTeam'] == pxp['offenseTeam']) & (pxp['type'].str.contains('Kickoff'))], 
-#                                [100-pxp['yardLine'], pxp['yardLine'], pxp['yardLine'], 100-pxp['yardLine']], default='np.nan').astype(int)
-
+    pxp['yrdline100'] = np.select([(pxp['homeTeam'] == pxp['offenseTeam']) & (~pxp['type'].str.contains('Kickoff')), 
+                                (pxp['homeTeam'] == pxp['offenseTeam']) & (pxp['type'].str.contains('Kickoff')), 
+                                (pxp['awayTeam'] == pxp['offenseTeam']) & (~pxp['type'].str.contains('Kickoff')),
+                                (pxp['awayTeam'] == pxp['offenseTeam']) & (pxp['type'].str.contains('Kickoff'))], 
+                               [100-pxp['yardLine'], pxp['yardLine'], pxp['yardLine'], 100-pxp['yardLine']], default='np.nan')
     pxp['yrdline100'] = np.select([(pxp['homeTeam'] == pxp['offenseTeam']),
                                 (pxp['awayTeam'] == pxp['offenseTeam'])], 
-                               [100-pxp['yardLine'], pxp['yardLine']], default='np.nan').astype(int)
+                               [100-pxp['yardLine'], pxp['yardLine']], default='np.nan')
 
     # Compute field region
     pxp['yrdregion'] = pd.cut(pxp['yrdline100'], [0., 9., 20., 100.], labels=['Inside10', '10to20', 'Beyond20'])
@@ -47,11 +46,11 @@ def extract_data(pxp):
     
     ## Compute fieldgoal distance: Make a new column to determine fieldgoals distance (blockFG for TD and return is different)
     pxp.loc[(pxp['type'].isin(['Field Goal Good','Field Goal Missed','Blocked Field Goal'])),'FieldGoalDistance']=pxp['yardsGained']
-    pxp.loc[(pxp['type'].isin(['Missed Field Goal Return', 'Missed Field Goal Return Touchdown','Blocked Field Goal Touchdown'])),'FieldGoalDistance']=pxp['yrdline100'].astype(int)
+    pxp.loc[(pxp['type'].isin(['Missed Field Goal Return', 'Missed Field Goal Return Touchdown','Blocked Field Goal Touchdown'])),'FieldGoalDistance']=pxp['yrdline100']
 
 
     # Fill in missing values due to timeouts leaving NAs in the dataset. This is not needed in NCAA plays
-#     pxp.loc[:, ['HomeScore', 'AwayScore']] = pxp[['HomeScore', 'AwayScore']].fillna(method='ffill')
+    pxp.loc[:, ['HomeScore', 'AwayScore']] = pxp[['HomeScore', 'AwayScore']].fillna(method='ffill')
     
     # Compute nextposteam, nextyrdline100, nextdown, and 1stdownconversion.  Must be within a game 
     # and a half since possession doesn't carry between halves and obviously not between games.  
@@ -79,7 +78,8 @@ def extract_data(pxp):
         (pxp.loc[ignore_mask, 'distance'] <= pxp.loc[ignore_mask, 'yardsGained']) |
         (pxp.loc[ignore_mask, 'Touchdown'] == 1)
     ).astype(int)
-    
-    pxp['yrdline100'] = pxp['yrdline100'].astype(int)
-    
+    try:
+        pxp['yrdline100'] = [int(x) for x in pxp['yrdline100']]
+    except ValueError:
+        do_nothing = 2
     return pxp

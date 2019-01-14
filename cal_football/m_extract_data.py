@@ -23,14 +23,14 @@ def m_extract_data(pxp):
     yrdline100arr = []
             
     for index, row in pxp.iterrows():
-        if row['home_off_away_def']:
+        if (row['home_off_away_def'] and row['homeTeam'] == row['offenseTeam']) or (not row['home_off_away_def'] and row['awayTeam'] == row['offenseTeam']):
             yrdline100arr.append(100 - row['yardLine'])
         else:
             yrdline100arr.append(row['yardLine'])
     pxp['yrdline100'] = yrdline100arr
 
     # Compute field region
-    #pxp['yrdregion'] = pd.cut(pxp['yrdline100'], [0., 9., 20., 100.], labels=['Inside10', '10to20', 'Beyond20'])
+    pxp['yrdregion'] = pd.cut(pxp['yrdline100'], [0., 9., 20., 100.], labels=['Inside10', '10to20', 'Beyond20'])
     
     # Compute Touchdown play: Make a new column to determine offensive touchdown (only either rushing or passing play)
     # The NFL model use both defensive and offensive TD here (and some other weird type of TD)
